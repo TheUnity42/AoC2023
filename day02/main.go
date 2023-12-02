@@ -22,8 +22,13 @@ func main() {
 	// close the file when we're done
 	defer file.Close()
 
+	games := ReadGames(file)
+
 	// part1
-	part1(file)
+	part1(games)
+
+	// part2
+	part2(games)
 
 }
 
@@ -42,9 +47,11 @@ func (g Game) IsValidFrom(max Game) bool {
 	}
 }
 
-func part1(file *os.File) {
-	fmt.Printf("Part 1\n")
+func (g Game) GetPower() int {
+	return g.MaxRed * g.MaxGreen * g.MaxBlue
+}
 
+func ReadGames(file *os.File) []Game {
 	// create a buffer so we can read line by line
 	scanner := bufio.NewScanner(file)
 
@@ -78,6 +85,12 @@ func part1(file *os.File) {
 		games = append(games, game)
 	}
 
+	return games
+}
+
+func part1(games []Game) {
+	fmt.Printf("Part 1\n")
+
 	// set target
 	maxGame := Game{Id: 999, MaxRed: 12, MaxGreen: 13, MaxBlue: 14}
 
@@ -91,6 +104,20 @@ func part1(file *os.File) {
 	}
 
 	fmt.Printf("Sum of Ids = %v\n", idSum)
+}
+
+func part2(games []Game) {
+	fmt.Printf("Part 2\n")
+
+	// compute power for each game
+	// and sum
+	sum := 0
+
+	for _, game := range games {
+		sum += game.GetPower()
+	}
+
+	fmt.Printf("Sum of Powers = %v\n", sum)
 }
 
 func findMaxForGame(id int, game string) (Game, error) {
